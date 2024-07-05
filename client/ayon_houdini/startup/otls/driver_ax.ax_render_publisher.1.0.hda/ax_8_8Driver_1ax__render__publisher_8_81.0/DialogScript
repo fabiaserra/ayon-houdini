@@ -1,0 +1,123 @@
+# Dialog script for ax::ax_render_publisher::1.0 automatically generated
+
+{
+    name	ax::ax_render_publisher::1.0
+    script	ax::ax_render_publisher::1.0
+    label	"AX Render Publisher"
+
+    help {
+	""
+    }
+
+    inputlabel	1	"Input #1"
+
+    parm {
+        name    "execute"
+        baseparm
+        label   "Render"
+        invisible
+        joinnext
+        export  none
+    }
+    parm {
+        name    "renderdialog"
+        baseparm
+        label   "Controls..."
+        nolabel
+        invisible
+        export  none
+    }
+    parm {
+        name    "folder_path"
+        label   "Folder Path"
+        type    string
+        default { "$AYON_FOLDER_PATH" }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "base_product_name"
+        label   "Base Product Name"
+        type    string
+        default { [ "opinput(\".\", 0)" hscript-expr ] }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "task"
+        label   "Task"
+        type    string
+        default { "$AYON_TASK_NAME" }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "comment"
+        label   "Comment"
+        type    string
+        default { "" }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "editor" "0" }
+        parmtag { "editorlines" "5" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "use_hip_version"
+        label   "Use version from HIP"
+        type    toggle
+        joinnext
+        default { "on" }
+        disablewhen "{ override_version_enable == 1 }"
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "override_version_enable"
+        label   "Override Version"
+        type    toggle
+        joinnext
+        default { "off" }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "override_version"
+        label   "Version"
+        type    integer
+        nolabel
+        default { "1" }
+        disablewhen "{ override_version_enable != 1 }"
+        range   { 1! 10 }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "sepparm"
+        label   "Separator"
+        type    separator
+        default { "" }
+    }
+    parm {
+        name    "publish_beauty"
+        label   "Publish Beauty"
+        type    toggle
+        default { "0" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "publish_util"
+        label   "Publish Util"
+        type    toggle
+        default { "0" }
+        parmtag { "script_callback_language" "python" }
+    }
+    parm {
+        name    "submit_publish"
+        label   "Submit to Publish"
+        type    button
+        default { "0" }
+        parmtag { "autoscope" "0000000000000000" }
+        parmtag { "script_callback" "hou.phm().submit_to_publish(kwargs[\"node\"])" }
+        parmtag { "script_callback_language" "python" }
+    }
+}

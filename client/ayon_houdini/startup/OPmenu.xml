@@ -5,25 +5,78 @@
 
 <menuDocument>
     <menu>
-        <!-- Operator type and asset options. -->
-        <subMenu id="opmenu.vhda_options_create">
-            <insertBefore>opmenu.unsynchronize</insertBefore>
-                <scriptItem id="opmenu.vhda_create_ayon">
-                    <insertAfter>opmenu.vhda_create</insertAfter>
-                    <label>Create New (AYON)...</label>
-                    <context>
-                    </context>
+        <scriptItem id="opmenu.vhda_create_ayon">
+            <label>Create Digital Asset (AYON)...</label>
+            <insertAfter>opmenu.vhda_create</insertAfter>
+            <context>
+                <expression>
+return kwargs["node"].canCreateDigitalAsset()
+                </expression>
+            </context>
                     <scriptCode>
 <![CDATA[
 from ayon_houdini.api.creator_node_shelves import create_interactive
 
 node = kwargs["node"]
 if node not in hou.selectedNodes():
-    node.setSelected(True)
+node.setSelected(True)
 create_interactive("io.openpype.creators.houdini.hda", **kwargs)
 ]]>
-                     </scriptCode>
-                </scriptItem>
+            </scriptCode>
+        </scriptItem>
+        <!-- Custom menu to create studio HDAs. -->
+        <scriptItem id="opmenu.vhda_create_ax">
+            <label>Create Digital Asset (Alkemy-X)...</label>
+            <insertAfter>opmenu.vhda_create_ayon</insertAfter>
+            <context>
+                <expression>
+return kwargs["node"].canCreateDigitalAsset()
+                </expression>
+            </context>
+            <scriptCode><![CDATA[
+from ayon_houdini.api import hda_utils
+hda_utils.createAssetFromSubnet(kwargs["node"])
+]]>
+            </scriptCode>
+        </scriptItem>
+        <subMenu id="opmenu.vhda_options_ax">
+            <label>Digital Asset (Alkemy-X)</label>
+            <insertAfter>opmenu.vhda_options</insertAfter>
+            <context>
+                <expression>bool(kwargs["node"].type().definition())</expression>
+            </context>
+            <scriptItem id="opmenu.vhda_save_as_ax">
+                <label>Save Copy As... (Alkemy-X)</label>
+                <scriptCode>
+<![CDATA[
+from ayon_houdini.api import hda_utils
+hda_utils.saveAs(kwargs["node"])
+]]>
+                </scriptCode>
+            </scriptItem>
+            <separatorItem/>
+            <scriptItem id="opmenu.vhda_bump_major_ax">
+                <label>Increase Major Version (Alkemy-X)</label>
+                <context>
+                </context>
+                <scriptCode>
+<![CDATA[
+from ayon_houdini.api import hda_utils
+hda_utils.increaseMajorVersion(kwargs["node"])
+]]>
+                </scriptCode>
+            </scriptItem>
+            <scriptItem id="opmenu.vhda_bump_minor_ax">
+                <label>Increase Minor Version (Alkemy-X)</label>
+                <context>
+                </context>
+                <scriptCode>
+<![CDATA[
+from ayon_houdini.api import hda_utils
+hda_utils.increaseMinorVersion(kwargs["node"])
+]]>
+                </scriptCode>
+            </scriptItem>  
         </subMenu>
     </menu>
 </menuDocument>

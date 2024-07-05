@@ -16,13 +16,13 @@ return label
 
             <separatorItem/>
 
-            <scriptItem id="ayon_create">
-                <label>Create...</label>
+            <scriptItem id="workfiles">
+                <label>Work Files...</label>
                 <scriptCode><![CDATA[
 import hou
 from ayon_core.tools.utils import host_tools
 parent = hou.qt.mainWindow()
-host_tools.show_publisher(parent, tab="create")
+host_tools.show_workfiles(parent)
 ]]></scriptCode>
             </scriptItem>
 
@@ -36,16 +36,6 @@ host_tools.show_loader(parent=parent, use_context=True)
 ]]> </scriptCode>
             </scriptItem>
 
-            <scriptItem id="publish">
-                <label>Publish...</label>
-                <scriptCode><![CDATA[
-import hou
-from ayon_core.tools.utils import host_tools
-parent = hou.qt.mainWindow()
-host_tools.show_publisher(parent, tab="publish")
-]]></scriptCode>
-            </scriptItem>
-
             <scriptItem id="ayon_manage">
                 <label>Manage...</label>
                 <scriptCode><![CDATA[
@@ -56,27 +46,7 @@ host_tools.show_scene_inventory(parent)
 ]]></scriptCode>
             </scriptItem>
 
-            <scriptItem id="library_load">
-                <label>Library...</label>
-                <scriptCode><![CDATA[
-import hou
-from ayon_core.tools.utils import host_tools
-parent = hou.qt.mainWindow()
-host_tools.show_library_loader(parent=parent)
-]]></scriptCode>
-            </scriptItem>
-
             <separatorItem/>
-
-            <scriptItem id="workfiles">
-                <label>Work Files...</label>
-                <scriptCode><![CDATA[
-import hou
-from ayon_core.tools.utils import host_tools
-parent = hou.qt.mainWindow()
-host_tools.show_workfiles(parent)
-]]></scriptCode>
-            </scriptItem>
 
             <scriptItem id="set_frame_range">
                 <label>Set Frame Range</label>
@@ -94,7 +64,51 @@ ayon_houdini.api.lib.update_houdini_vars_context_dialog()
 ]]></scriptCode>
             </scriptItem>
 
+            <scriptItem id="library_load">
+                <label>Library...</label>
+                <scriptCode><![CDATA[
+import hou
+from ayon_core.tools.utils import host_tools
+parent = hou.qt.mainWindow()
+host_tools.show_library_loader(parent=parent)
+]]></scriptCode>
+            </scriptItem>
+
             <separatorItem/>
+
+            <scriptItem id="ayon_create">
+                <label>Create...</label>
+                <scriptCode><![CDATA[
+import hou
+from ayon_core.tools.utils import host_tools
+parent = hou.qt.mainWindow()
+host_tools.show_publisher(parent, tab="create")
+]]></scriptCode>
+            </scriptItem>
+            <scriptItem id="publish">
+                <label>Publish...</label>
+                <scriptCode><![CDATA[
+import hou
+from ayon_core.tools.utils import host_tools
+parent = hou.qt.mainWindow()
+host_tools.show_publisher(parent, tab="publish")
+]]></scriptCode>
+            </scriptItem>
+
+            <separatorItem/>
+
+            <scriptItem id="create_flipbook">
+                <label>Create Flipbook...</label>
+                <scriptCode><![CDATA[
+import hou
+from ayon_houdini.api import flipbook
+parent = hou.qt.mainWindow()
+flipbook.show_dialog(parent)
+]]></scriptCode>
+            </scriptItem>
+
+            <separatorItem/>
+
             <scriptItem id="experimental_tools">
                 <label>Experimental tools...</label>
                 <scriptCode><![CDATA[

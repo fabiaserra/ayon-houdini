@@ -1,0 +1,14 @@
+Operator:     ax::ax_publisher_submitter::1.0
+Label:        AX Publisher Submitter
+Path:         oplib:/ax::Driver/ax_publisher_submitter::1.0?ax::Driver/ax_publisher_submitter::1.0
+Icon:         opdef:/ax::Driver/ax_publisher_submitter::1.0?IconImage
+Table:        Driver
+License:      
+Extra:        
+User:         
+Inputs:       0 to 999
+Subnet:       true
+Python:       false
+Empty:        false
+Modified:     Fri May 17 19:52:53 2024
+

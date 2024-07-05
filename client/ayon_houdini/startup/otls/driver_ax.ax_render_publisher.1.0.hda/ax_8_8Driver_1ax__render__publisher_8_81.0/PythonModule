@@ -1,0 +1,1 @@
+from ayon_houdini.nodes.ax_render_publisher import submit_to_publish

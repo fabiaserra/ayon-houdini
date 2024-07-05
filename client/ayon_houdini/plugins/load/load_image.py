@@ -27,11 +27,11 @@ def get_image_avalon_container():
         # Let's create avalon container secretly
         # but make sure the pipeline still is built the
         # way we anticipate it was built, asserting it.
-        assert path == "/obj/AVALON_CONTAINERS"
+        assert path == "/obj/PRODUCTS"
 
         parent = hou.node("/obj")
         avalon_container = parent.createNode(
-            "subnet", node_name="AVALON_CONTAINERS"
+            "subnet", node_name="PRODUCTS"
         )
 
     image_container = hou.node(path + "/IMAGES")

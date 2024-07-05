@@ -1,0 +1,6 @@
+from ayon_houdini.nodes.ax_publisher import representation_parms_callback
+
+node = kwargs["node"]
+input_index = kwargs["input_index"]
+
+representation_parms_callback(node, input_index)

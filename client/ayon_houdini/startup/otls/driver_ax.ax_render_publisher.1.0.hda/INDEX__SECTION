@@ -1,0 +1,14 @@
+Operator:     ax::ax_render_publisher::1.0
+Label:        AX Render Publisher
+Path:         oplib:/ax::Driver/ax_render_publisher::1.0?ax::Driver/ax_render_publisher::1.0
+Icon:         opdef:/ax::Driver/ax_render_publisher::1.0?IconImage
+Table:        Driver
+License:      
+Extra:        
+User:         
+Inputs:       0 to 1
+Subnet:       true
+Python:       false
+Empty:        false
+Modified:     Fri May 17 20:40:37 2024
+

@@ -43,6 +43,64 @@ def get_folder_fps(folder_entity=None):
     return folder_entity["attrib"]["fps"]
 
 
+def get_export_parameter(node):
+    """Return the export output parameter of the given node
+
+    Example:
+        root = hou.node("/obj")
+        my_alembic_node = root.createNode("alembic")
+        get_export_parameter(my_alembic_node)
+        # Result: "output"
+
+    Args:
+        node(hou.Node): node instance
+
+    Returns:
+        hou.Parm
+
+    """
+    node_type = node.type().description()
+
+    # Ensures the proper Take is selected for each ROP to retrieve the correct
+    # ifd
+    try:
+        rop_take = hou.takes.findTake(node.parm("take").eval())
+        if rop_take is not None:
+            hou.takes.setCurrentTake(rop_take)
+    except AttributeError:
+        # hou object doesn't always have the 'takes' attribute
+        pass
+
+    if node_type == "Mantra" and node.parm("soho_outputmode").eval():
+        return node.parm("soho_diskfile")
+    elif node_type == "USD" or node_type == "USD Render ROP" or node_type == "USD Render":
+        return node.parm("lopoutput")
+    elif node_type == "Alfred":
+        return node.parm("alf_diskfile")
+    elif (node_type == "RenderMan" or node_type == "RenderMan RIS"):
+        pre_ris22 = node.parm("rib_outputmode") and \
+            node.parm("rib_outputmode").eval()
+        ris22 = node.parm("diskfile") and node.parm("diskfile").eval()
+        if pre_ris22 or ris22:
+            return node.parm("soho_diskfile")
+    elif node_type == "Redshift" and node.parm("RS_archive_enable").eval():
+        return node.parm("RS_archive_file")
+    elif node_type == "Wedge" and node.parm("driver").eval():
+        return get_export_parameter(node.node(node.parm("driver").eval()))
+    elif node_type == "Arnold":
+        return node.parm("ar_ass_file")
+    elif node_type == "Alembic" and node.parm("use_sop_path").eval():
+        return node.parm("sop_path")
+    elif node_type == "Shotgun Mantra" and node.parm("soho_outputmode").eval():
+        return node.parm("sgtk_soho_diskfile")
+    elif node_type == "Shotgun Alembic" and node.parm("use_sop_path").eval():
+        return node.parm("sop_path")
+    elif node.type().nameWithCategory() == "Driver/vray_renderer":
+        return node.parm("render_export_filepath")
+
+    raise TypeError("Node type '%s' not supported" % node_type)
+
+
 def get_output_parameter(node):
     """Return the render output parameter of the given node
 
@@ -50,60 +108,81 @@ def get_output_parameter(node):
         root = hou.node("/obj")
         my_alembic_node = root.createNode("alembic")
         get_output_parameter(my_alembic_node)
-        >>> "filename"
-
-    Notes:
-        I'm using node.type().name() to get on par with the creators,
-            Because the return value of `node.type().name()` is the
-            same string value used in creators
-            e.g. instance_data.update({"node_type": "alembic"})
-
-        Rop nodes in different network categories have
-            the same output parameter.
-            So, I took that into consideration as a hint for
-            future development.
+        # Result: "output"
 
     Args:
         node(hou.Node): node instance
 
     Returns:
         hou.Parm
-    """
 
-    node_type = node.type().name()
+    """
+    node_type = node.type().description()
+    category = node.type().category().name()
 
     # Figure out which type of node is being rendered
-    if node_type in {"alembic", "rop_alembic"}:
-        return node.parm("filename")
-    elif node_type == "arnold":
-        if node_type.evalParm("ar_ass_export_enable"):
-            return node.parm("ar_ass_file")
-        return node.parm("ar_picture")
-    elif node_type in {
-        "geometry",
-        "rop_geometry",
-        "filmboxfbx",
-        "rop_fbx"
-    }:
+    if node_type in {"Geometry", "Filmbox FBX", "File Cache", "Labs File Cache"} or \
+            (node_type == "ROP Output Driver" and category == "Sop"):
         return node.parm("sopoutput")
-    elif node_type == "comp":
-        return node.parm("copoutput")
-    elif node_type in {"karma", "opengl"}:
-        return node.parm("picture")
-    elif node_type == "ifd":  # Mantra
-        if node.evalParm("soho_outputmode"):
-            return node.parm("soho_diskfile")
-        return node.parm("vm_picture")
-    elif node_type == "Redshift_Proxy_Output":
-        return node.parm("RS_archive_file")
-    elif node_type == "Redshift_ROP":
-        return node.parm("RS_outputFileNamePrefix")
-    elif node_type in {"usd", "usd_rop", "usdexport"}:
+    elif node_type == "USD" or node_type == "HuskStandalone":
         return node.parm("lopoutput")
-    elif node_type in {"usdrender", "usdrender_rop"}:
+    elif node_type == "USD Render ROP" or node_type == "USD Render":
         return node.parm("outputimage")
-    elif node_type == "vray_renderer":
+    elif node_type == "Composite":
+        return node.parm("copoutput")
+    elif node_type == "Channel":
+        return node.parm("chopoutput")
+    elif node_type == "Dynamics" or \
+            (node_type == "ROP Output Driver" and category == "Dop"):
+        return node.parm("dopoutput")
+    elif node_type == "Alfred":
+        return node.parm("alf_diskfile")
+    elif node_type == "RenderMan" or node_type == "RenderMan RIS":
+        return node.parm("ri_display")
+    elif node_type == "Redshift":
+        return node.parm("RS_returnmePrefix")
+    elif node_type == "Mantra":
+        return node.parm("vm_picture")
+    elif node_type == "Wedge":
+        driver_node = node.node(node.parm("driver").eval())
+        if driver_node:
+            return get_output_parameter(driver_node)
+    elif node_type == "Arnold":
+        return node.parm("ar_picture")
+    elif node_type == "Arnold Denoiser":
+        return node.parm("output")
+    elif node_type == "HQueue Simulation":
+        inner_node = node.node(node.parm("hq_driver").eval())
+        if inner_node:
+            return get_output_parameter(inner_node)
+    elif node_type == "ROP Alembic Output":
+        return node.parm("filename")
+    elif node_type == "Redshift":
+        return node.parm("RS_returnmePrefix")
+    elif node_type == "Alembic":
+        return node.parm("filename")
+    elif node_type == "Shotgun Mantra":
+        return node.parm("sgtk_vm_picture")
+    elif node_type == "Shotgun Alembic":
+        return node.parm("filename")
+    elif node_type == "Bake Texture":
+        return node.parm("vm_uvoutputpicture1")
+    elif node_type == "OpenGL":
+        return node.parm("picture")
+    elif node_type == "Octane":
+        return node.parm("HO_img_fileName")
+    elif node_type == "Fetch":
+        inner_node = node.node(node.parm("source").eval())
+        if inner_node:
+            try:
+                return get_output_parameter(inner_node)
+            except TypeError:
+                raise TypeError("Fetch source '%s' not supported" % inner_node)
+
+    elif node.type().nameWithCategory() == "Driver/vray_renderer":
         return node.parm("SettingsOutput_img_file_path")
+    elif node_type == "File Cache":
+        return node.parm("sopoutput")
 
     raise TypeError("Node type '%s' not supported" % node_type)
 

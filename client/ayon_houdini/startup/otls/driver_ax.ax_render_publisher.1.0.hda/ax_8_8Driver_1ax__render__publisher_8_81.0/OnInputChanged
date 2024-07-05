@@ -1,0 +1,5 @@
+from ayon_houdini.nodes.ax_render_publisher import input_changed_callback
+
+node = kwargs["node"]
+
+input_changed_callback(node)
