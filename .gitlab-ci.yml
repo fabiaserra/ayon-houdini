@@ -1,5 +1,10 @@
 stages:
   - init
+  - create
+  - release
+
+variables:
+  IMAGE_TAG: 2fbed62a
 
 get-version:
   stage: init
@@ -17,3 +22,34 @@ get-version:
     - if: $CI_COMMIT_TAG
       when: never
     - when: manual
+
+create-package:
+  stage: create
+  image: dm.tenant-alkemyx.lga1.ingress.coreweave.cloud/coreweave/pipeline/ayon/ayon-launcher/ayon-launcher:$IMAGE_TAG
+  script:
+    - python create_package.py
+  artifacts:
+    paths:
+      - package
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: manual
+
+tag_version:
+  stage: tag_version
+  dependencies:
+    - get-version
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - echo "Tagging repository with ${VERSION}"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: manual
+  release:
+    tag_name: '$VERSION'
+    description: 'Release $VERSION using CI pipeline $CI_PIPELINE_ID'
+  when: on_success
