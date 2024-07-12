@@ -13,7 +13,7 @@ get-version:
     - ADDON_NAME=$(sed -n 's/name = \"\(.*\)\"/\1/p' package.py)
     - VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' package.py)
     - echo "ADDON_NAME=${ADDON_NAME}" > version_info.txt
-    - echo "VERSION=${VERSION}" > version_info.txt
+    - echo "VERSION=${VERSION}" >> version_info.txt
   artifacts:
     reports:
       dotenv: version_info.txt
