@@ -1,24 +1,25 @@
 stages:
-  # - init
+  - init
   - create
+  - upload
   # - release
 
-# get-version:
-#   stage: init
-#   image: alpine:latest
-#   tags:
-#     - kube
-#   script:
-#     - VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' package.py)
-#     - echo "VERSION=${VERSION}" > version_info.txt
-#   artifacts:
-#     reports:
-#       dotenv: version_info.txt
-#   rules:
-#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-#     - if: $CI_COMMIT_TAG
-#       when: never
-#     - when: manual
+get-version:
+  stage: init
+  image: alpine:latest
+  tags:
+    - kube
+  script:
+    - VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' package.py)
+    - echo "VERSION=${VERSION}" > version_info.txt
+  artifacts:
+    reports:
+      dotenv: version_info.txt
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: manual
 
 create-package:
   stage: create
@@ -30,6 +31,22 @@ create-package:
   artifacts:
     paths:
       - package
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+      when: never
+    - when: manual
+
+upload-addon:
+  stage: upload
+  image: python:3.9-bookworm
+  tags:
+    - kube
+  dependencies:
+    - create-package
+  script:
+    - python -m pip install ayon-python-api
+    - python -c "import ayon_api; ayon_api.init_service(); ayon_api.upload_addon_zip('./package/ayon-houdini-${VERSION}.zip')"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_TAG
