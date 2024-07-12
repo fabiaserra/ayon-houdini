@@ -48,16 +48,16 @@ upload-addon:
     - python deploy_addon.py
   when: on_success
 
-# tag-version:
-#   stage: release
-#   tags:
-#     - kube
-#   dependencies:
-#     - get-version
-#   image: registry.gitlab.com/gitlab-org/release-cli:latest
-#   script:
-#     - echo "Tagging repository with ${VERSION}"
-#   release:
-#     tag_name: '$VERSION'
-#     description: 'Release $VERSION using CI pipeline $CI_PIPELINE_ID'
-#   when: on_success
+tag-version:
+  stage: release
+  tags:
+    - kube
+  dependencies:
+    - get-version
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - echo "Tagging repository with ${VERSION}"
+  release:
+    tag_name: '$VERSION'
+    description: 'Release $VERSION using CI pipeline $CI_PIPELINE_ID'
+  when: on_success
