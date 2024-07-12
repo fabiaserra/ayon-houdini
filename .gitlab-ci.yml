@@ -37,8 +37,8 @@ create-package:
       when: never
     - when: manual
 
-tag_version:
-  stage: tag_version
+tag-version:
+  stage: release
   dependencies:
     - get-version
   image: registry.gitlab.com/gitlab-org/release-cli:latest
