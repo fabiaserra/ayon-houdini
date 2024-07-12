@@ -10,7 +10,7 @@ get-version:
   stage: init
   image: alpine:latest
   tags:
-    - mnt-pipe
+    - kube
   script:
     - VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' package.py)
     - echo "VERSION=${VERSION}" > version_info.txt
@@ -26,7 +26,7 @@ get-version:
 create-package:
   stage: create
   tags:
-    - mnt-pipe
+    - kube
   image: dm.tenant-alkemyx.lga1.ingress.coreweave.cloud/coreweave/pipeline/ayon/ayon-launcher/ayon-launcher:$IMAGE_TAG
   script:
     - python create_package.py
@@ -41,6 +41,8 @@ create-package:
 
 tag-version:
   stage: release
+  tags:
+    - kube
   dependencies:
     - get-version
   image: registry.gitlab.com/gitlab-org/release-cli:latest
