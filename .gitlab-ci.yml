@@ -41,6 +41,7 @@ upload-addon:
   tags:
     - kube
   dependencies:
+    - get-version
     - create-package
   script:
     - python -m pip install ayon-python-api
