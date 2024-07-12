@@ -27,7 +27,7 @@ create-package:
   stage: create
   tags:
     - kube
-  image: dm.tenant-alkemyx.lga1.ingress.coreweave.cloud/coreweave/pipeline/ayon/ayon-launcher/ayon-launcher:$IMAGE_TAG
+  image: alpine:latest
   script:
     - python create_package.py
   artifacts:
