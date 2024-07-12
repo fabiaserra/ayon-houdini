@@ -10,7 +10,9 @@ get-version:
   tags:
     - kube
   script:
+    - ADDON_NAME=$(sed -n 's/name = \"\(.*\)\"/\1/p' package.py)
     - VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' package.py)
+    - echo "ADDON_NAME=${ADDON_NAME}" > version_info.txt
     - echo "VERSION=${VERSION}" > version_info.txt
   artifacts:
     reports:
@@ -46,7 +48,7 @@ upload-addon:
     - create-package
   script:
     - python -m pip install ayon-python-api
-    - python -c "import ayon_api; ayon_api.init_service(); ayon_api.upload_addon_zip('./package/ayon-houdini-${VERSION}.zip')"
+    - python deploy_addon.py
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_TAG
