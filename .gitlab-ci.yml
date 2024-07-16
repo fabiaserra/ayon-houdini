@@ -8,11 +8,13 @@ get-version:
   stage: init
   image: alpine:latest
   tags:
-    - kube
+    - on-prem
   script:
-    - ADDON_NAME=$(sed -n 's/name = \"\(.*\)\"/\1/p' package.py)
-    - VERSION=$(sed -n 's/version = \"\(.*\)\"/\1/p' package.py)
+    - ADDON_NAME=$(sed -n 's/^name = "\([^"]*\)".*/\1/p' package.py)
+    - VERSION=$(sed -n 's/^version = "\([^"]*\)".*/\1/p' package.py)
+    - echo "ADDON_NAME=${ADDON_NAME}"
     - echo "ADDON_NAME=${ADDON_NAME}" > version_info.txt
+    - echo "VERSION=${VERSION}"
     - echo "VERSION=${VERSION}" >> version_info.txt
   artifacts:
     reports:
@@ -26,7 +28,7 @@ get-version:
 create-package:
   stage: create
   tags:
-    - kube
+    - on-prem
   image: python:3.9-bookworm
   script:
     - python create_package.py
@@ -37,7 +39,7 @@ create-package:
 
 upload-addon:
   stage: upload
-  image: python:3.9-bookworm
+  image: python:3.9-slim
   tags:
     - kube
   dependencies:
@@ -51,7 +53,7 @@ upload-addon:
 tag-version:
   stage: release
   tags:
-    - kube
+    - on-prem
   dependencies:
     - get-version
   image: registry.gitlab.com/gitlab-org/release-cli:latest
