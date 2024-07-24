@@ -481,14 +481,22 @@ def reset_framerange(fps=True, frame_range=True):
 
         # Set Start and End Frames
         task_attrib = task_entity["attrib"]
-        frame_start = task_attrib.get("frameStart", 0)
-        frame_end = task_attrib.get("frameEnd", 0)
 
-        handle_start = task_attrib.get("handleStart", 0)
-        handle_end = task_attrib.get("handleEnd", 0)
+        ### Starts Alkemy-X Override ###
+        # Use Source In/Out for frame range instead of frame start/end +- handles
+        # as that's the ground truth plate range without any
+        frame_start = task_attrib.get("sourceIn")
+        if not frame_start:
+            frame_start = task_attrib.get("frameStart", 0)
+            handle_start = task_attrib.get("handleStart", 0)
+            frame_start -= int(handle_start)
 
-        frame_start -= int(handle_start)
-        frame_end += int(handle_end)
+        frame_end = task_attrib.get("sourceOut")
+        if not frame_end:
+            frame_end = task_attrib.get("frameEnd", 0)
+            handle_end = task_attrib.get("handleEnd", 0)
+            frame_end += int(handle_end)
+        ### Ends Alkemy-X Override ###
 
         # Set frame range and FPS
         hou.playbar.setFrameRange(frame_start, frame_end)
