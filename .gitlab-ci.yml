@@ -20,7 +20,7 @@ get-version:
     reports:
       dotenv: version_info.txt
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_BRANCH != $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_TAG
       when: never
     - when: manual
@@ -29,13 +29,15 @@ create-package:
   stage: create
   tags:
     - on-prem
-  image: python:3.9-bookworm
+  image: python:3.9-slim
   script:
     - python create_package.py
   artifacts:
     paths:
       - package
-  when: on_success
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
 
 upload-addon:
   stage: upload
@@ -48,7 +50,9 @@ upload-addon:
   script:
     - python -m pip install ayon-python-api
     - python deploy_addon.py
-  when: on_success
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
 
 tag-version:
   stage: release
@@ -62,4 +66,6 @@ tag-version:
   release:
     tag_name: '$VERSION'
     description: 'Release $VERSION using CI pipeline $CI_PIPELINE_ID'
-  when: on_success
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
