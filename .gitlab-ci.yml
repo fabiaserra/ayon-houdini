@@ -1,71 +1,10 @@
+include:
+  - project: 'shared/ci-templates'
+    file: 'ayon-addon-util.yml'
+    ref: 'master'
+
 stages:
   - init
+  - tag
   - create
   - upload
-  - release
-
-get-version:
-  stage: init
-  image: alpine:latest
-  tags:
-    - on-prem
-  script:
-    - ADDON_NAME=$(sed -n 's/^name = "\([^"]*\)".*/\1/p' package.py)
-    - VERSION=$(sed -n 's/^version = "\([^"]*\)".*/\1/p' package.py)
-    - echo "ADDON_NAME=${ADDON_NAME}"
-    - echo "ADDON_NAME=${ADDON_NAME}" > version_info.txt
-    - echo "VERSION=${VERSION}"
-    - echo "VERSION=${VERSION}" >> version_info.txt
-  artifacts:
-    reports:
-      dotenv: version_info.txt
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_TAG
-      when: never
-    - when: manual
-
-create-package:
-  stage: create
-  tags:
-    - on-prem
-  image: python:3.9-slim
-  script:
-    - python create_package.py
-  artifacts:
-    paths:
-      - package
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
-
-upload-addon:
-  stage: upload
-  image: python:3.9-slim
-  tags:
-    - kube
-  dependencies:
-    - get-version
-    - create-package
-  script:
-    - python -m pip install ayon-python-api
-    - python deploy_addon.py
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
-
-tag-version:
-  stage: release
-  tags:
-    - on-prem
-  dependencies:
-    - get-version
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  script:
-    - echo "Tagging repository with ${VERSION}"
-  release:
-    tag_name: '$VERSION'
-    description: 'Release $VERSION using CI pipeline $CI_PIPELINE_ID'
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
