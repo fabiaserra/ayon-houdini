@@ -1,25 +1,22 @@
 class BaseNode(object):
     default_parms = {}
-        
-    def __init__(self, node) -> None:
-        self.node = node
 
     def on_created(self):
-        ptg = self.node.parmTemplateGroup()
+        ptg = self.parmTemplateGroup()
 
         # Replace a bunch of parm defaults to make it easier for
         # artists to know what has been changed
         ptg = self.replace_parm_defaults(ptg)
-        self.node.setParmTemplateGroup(ptg)
+        self.setParmTemplateGroup(ptg)
 
         # We go over all the default parms again and set them as
         # the parm defaults doesn't work for some parms for
         # some reason (i.e. "ar_export_referenced_materials")
         for parm_name, parm_value in self.default_parms.items():
-            parm = self.node.parm(parm_name)
+            parm = self.parm(parm_name)
             if not parm:
                 continue
-            self.node.parm(parm_name).set(parm_value)
+            self.parm(parm_name).set(parm_value)
 
     def replace_parm_defaults(self, ptg):
         """Util function to replace parm template group parm defaults with given dict"""

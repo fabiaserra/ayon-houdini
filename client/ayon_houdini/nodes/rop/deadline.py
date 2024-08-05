@@ -27,7 +27,7 @@ class Deadline(BaseNode):
 
     def on_loaded(self):
         for parm_path in self.parm_paths:
-            parm = self.node.parm(parm_path)
+            parm = self.parm(parm_path)
             dl_group = parm.evalAsString()
             if constants.HOU_VERSION_STR not in dl_group:
                 new_group, num_subs = re.subn(r"\d+-\d+", constants.HOU_VERSION_STR, dl_group)

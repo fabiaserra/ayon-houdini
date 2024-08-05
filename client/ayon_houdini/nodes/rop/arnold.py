@@ -123,7 +123,7 @@ class Arnold(PublishNode):
         """Callback function to run when creating node."""
         super().on_created()
 
-        ptg = self.node.parmTemplateGroup()
+        ptg = self.parmTemplateGroup()
 
         # Add templates parm menu
         templates_parm = hou.MenuParmTemplate(
@@ -136,12 +136,12 @@ class Arnold(PublishNode):
             script_callback_language=hou.scriptLanguage.Python,
         )
         ptg.insertBefore(ptg.findIndices("trange"), templates_parm)
-        self.node.setParmTemplateGroup(ptg)
+        self.setParmTemplateGroup(ptg)
 
         # Create dictionary of AOV parms to set in node
         aov_parms = {}
         num_aovs = len(self.bty_aovs) + len(self.util_aovs)
-        self.node.parm("ar_aovs").set(num_aovs)
+        self.parm("ar_aovs").set(num_aovs)
         aov_idx = 1
         for aov_label, aov_data in self.bty_aovs.items():
             aov_parms[f"ar_aov_label{aov_idx}"] = aov_label
@@ -157,12 +157,12 @@ class Arnold(PublishNode):
                 aov_parms[f"{aov_parm}{aov_idx}"] = aov_value
             aov_idx += 1
         
-        self.node.setParms(aov_parms)
+        self.setParms(aov_parms)
 
         # Force callback of template parm
         template_callback(
-            script_value=self.node.parm("ax_template").evalAsString(),
-            node=self.node
+            script_value=self.parm("ax_template").evalAsString(),
+            node=self
         )
     
     def publish_callback(self, silent=False):
@@ -175,10 +175,10 @@ class Arnold(PublishNode):
             return message, False
 
         # Publish the output node normally
-        base_product_name = self.node.parm("product_name").evalAsString()
-        if self.node.parm("publish_beauty").eval():
+        base_product_name = self.parm("product_name").evalAsString()
+        if self.parm("publish_beauty").eval():
             message_, success_ = publish.submit_to_publish(
-                self.node,
+                self,
                 publish_data = {
                     "product_name": f"{base_product_name}_beauty"
                 },
@@ -188,17 +188,17 @@ class Arnold(PublishNode):
                 success = False
             message += f"{message_}\n"
 
-        if self.node.parm("publish_util").eval():
+        if self.parm("publish_util").eval():
             output_files = set()
-            num_aovs = self.node.parm("ar_aovs").eval()
+            num_aovs = self.parm("ar_aovs").eval()
             for aov_idx in range(1, num_aovs):
-                is_enabled = self.node.parm(f"ar_enable_aov{aov_idx}").eval()
+                is_enabled = self.parm(f"ar_enable_aov{aov_idx}").eval()
                 if not is_enabled:
                     continue
                 
-                is_separate_file = self.node.parm(f"ar_aov_separate{aov_idx}").eval()
+                is_separate_file = self.parm(f"ar_aov_separate{aov_idx}").eval()
                 if is_separate_file:
-                    output_files.add(self.node.parm(f"ar_aov_separate_file{aov_idx}").evalAsString())
+                    output_files.add(self.parm(f"ar_aov_separate_file{aov_idx}").evalAsString())
             
             if len(output_files) > 1:
                 success = False
@@ -209,7 +209,7 @@ class Arnold(PublishNode):
                 "product_name": f"{base_product_name}_util"
             }
             message_, success_ = publish.submit_to_publish(
-                self.node,
+                self,
                 publish_data = publish_data,
                 silent=True
             )

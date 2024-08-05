@@ -20,22 +20,22 @@ class PublishNode(BaseNode):
 
         # Add folder that allows us to publish the node
         parm_utils.add_parm_template_to_node(
-            self.get_publish_parm_template(), self.node
+            self.get_publish_parm_template(), self
         )
 
         self.update_representations()
 
     def update_representations(self):
         """Callback to update representation parms automatically"""
-        out_parm = lib.get_output_parameter(self.node)
-        representations_parm = self.node.parm("representations")
+        out_parm = lib.get_output_parameter(self)
+        representations_parm = self.parm("representations")
         if out_parm:
             representations_parm.set(1)
-            rep_name_parm = self.node.parm("name1")
+            rep_name_parm = self.parm("name1")
             # This needs to be static because Houdini doesn't allow us to
             # save expressions on multiparms
             rep_name_parm.set(self.get_rep_name_from_path(out_parm.evalAsString()))
-            rep_path_parm = self.node.parm("path1")
+            rep_path_parm = self.parm("path1")
             rep_path_parm.set(f'`chs("./{out_parm.name()}")`')
         else:
             representations_parm.set(0)
@@ -43,7 +43,7 @@ class PublishNode(BaseNode):
     def pre_publish_callback(self, silent=False):
         """Callback to run any code before publish"""
         message = ""
-        comment = self.node.parm("comment").evalAsString()
+        comment = self.parm("comment").evalAsString()
         if not comment:
             message = "Comment missing, please add a comment to publish.\n"
             if not silent:
@@ -61,7 +61,7 @@ class PublishNode(BaseNode):
         message, success = self.pre_publish_callback(silent=silent)
         if not success:
             return message, False
-        return publish.submit_to_publish(self.node, silent=silent)
+        return publish.submit_to_publish(self, silent=silent)
 
     def get_rep_name_from_path(self, out_path):
         """Util function to find our convention for representation names given a file path"""
