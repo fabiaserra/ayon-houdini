@@ -85,8 +85,7 @@ class PublishNode(BaseNode):
                     "type": hou.ButtonParmTemplate,
                     "name": "publish_button",
                     "label": "Submit to Publish",
-                    "script_callback": "from ayon_houdini.nodes import wrap_node; "
-                        "node_obj = wrap_node(kwargs['node']); node_obj.publish_callback()",
+                    "script_callback": "node = kwargs['node']; node.publish_callback()",
                     "script_callback_language": hou.scriptLanguage.Python,
                 },
                 {

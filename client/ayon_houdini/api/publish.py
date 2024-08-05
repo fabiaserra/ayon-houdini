@@ -9,7 +9,6 @@ from ayon_houdini.nodes import (
     ax_publisher,
     ax_render_publisher,
 )
-from ayon_houdini.nodes import wrap_node
 
 
 # Constant strings for the types of products that can be published
@@ -160,9 +159,8 @@ def submit_inputs_to_publish(submitter_node):
                 silent=True
             )
         else:
-            node_obj = wrap_node(node)
-            if node_obj and hasattr(node_obj, "publish_callback"):
-                response_, success_ = node_obj.publish_callback(silent=True)
+            if hasattr(node, "publish_callback"):
+                response_, success_ = node.publish_callback(silent=True)
             else:
                 continue
             
