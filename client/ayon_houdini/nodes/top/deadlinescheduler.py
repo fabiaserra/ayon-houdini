@@ -23,6 +23,7 @@ class Deadlinescheduler(BaseNode):
         "deadline_submitjobname": 'PDG->Submit cook of `opname("..")` in $HIPNAME.hip - $AYON_PROJECT_NAME ($SHOW)',
         "deadline_overrideplugin": 1,
         "deadline_plugindirectory": "$AX_HOUDINI_TOOLS/deadline_plugins",
+        "deadline_copyplugin": 0,
     }
 
     # Node parms that have Deadline groups set
@@ -50,28 +51,8 @@ class Deadlinescheduler(BaseNode):
             "deadline_envname6": "AYON_APP_NAME" if is_ayon else "AVALON_APP_NAME",
             "deadline_envvalue6": "$AYON_APP_NAME" if is_ayon else "$AVALON_APP_NAME",
         }
-        self.node.setParms(parms_to_set)
+        self.setParms(parms_to_set)
 
     def on_loaded(self):
-        for parm_path in self.parm_paths:
-            parm = self.node.parm(parm_path)
-            dl_group = parm.evalAsString()
-            if constants.HOU_VERSION_STR not in dl_group:
-                new_group, num_subs = re.subn(r"\d+-\d+", constants.HOU_VERSION_STR, dl_group)
-                # If there was no replacement, check if the group set is one of the legacy ones
-                if not num_subs:
-                    if dl_group == "houdini-cpu" or dl_group.endswith(("xeon", "epyc")) or dl_group == "none":
-                        new_group = constants.DEFAULT_DEADLINE_GROUP
-                        print(
-                            f"INFO: Replaced legacy '{dl_group}' group from parm '{parm.path()}' with new group: '{new_group}'."
-                        )
-                else:
-                    print(
-                        f"INFO: Updated '{dl_group}' group from parm '{parm.path()}' with new Houdini version: '{new_group}'."
-                    )
-                
-                parm.set(new_group)
-
-        # Make sure HFS root is correct for Deadline
-        hfs_root_parm = self.node.parm("deadline_hfs")
-        hfs_root_parm.set("\$HOUDINI_ROOT")
+        # Make sure we have the parms up to date as they are important for PDG to work
+        self.on_created()
