@@ -18,7 +18,9 @@ additional superclass. The process works as follows:
         2.1. Checks if there is a known class for the node type
 		    (e.g., `obj/myNode`).
         2.2. If the class is not known, attempts to import it dynamically:
-		    `from ayon_houdini.nodes.<category>.myNode import myNode`.
+		    `from ayon_houdini.nodes.<category>.myNode import MyNode`.
+            Note that we are capitalizing the class name to match the PEP8
+            naming convention for classes.
         2.3. Creates a new instance of the custom class, decorated by
 		    `WrappedCls`, to handle calls between the custom class and the
 			original `hou.Node`.
@@ -81,8 +83,8 @@ def import_class(node_category, node_type):
     """
     try:
         path = "ayon_houdini.nodes.{}.{}".format(node_category, node_type)
-        mod = __import__(path, fromlist=path.split('.')[:-1])
-        custom_class = getattr(mod, node_type)
+        module = __import__(path, fromlist=path.split('.')[:-1])
+        custom_class = getattr(module, node_type.capitalize())
         return decorate(custom_class)
     except Exception as e:
         raise ImportError(
