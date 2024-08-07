@@ -6,7 +6,7 @@ from ayon_houdini.api import plugin
 
 from ayon_core.lib import get_ffprobe_streams
 from ayon_core.pipeline import get_representation_path
-from ayon_core.hosts.houdini.plugins.load import load_image
+from ayon_houdini.plugins.load import load_image
 
 
 class SetFrameRangeLoader(plugin.HoudiniLoader):
