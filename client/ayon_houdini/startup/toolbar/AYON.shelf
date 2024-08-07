@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shelfDocument>
+  <!-- This file contains definitions of shelves, toolbars, and tools.
+ It should not be hand-edited when it is being used by the application.
+ Note, that two definitions of the same element are not allowed in
+ a single file. -->
+
+  <toolshelf name="AYON" label="AYON">
+    <memberTool name="network_copy"/>
+    <memberTool name="network_paste"/>
+  </toolshelf>
+
+  <tool name="network_copy" label="Network Copy" icon="PLASMA_App">
+    <toolMenuContext name="network">
+      <contextNetType>OBJ</contextNetType>
+      <contextNetType>SOP</contextNetType>
+      <contextNetType>CHOP</contextNetType>
+      <contextNetType>ROP</contextNetType>
+      <contextNetType>LOP</contextNetType>
+      <contextNetType>SHOP</contextNetType>
+      <contextNetType>COP2</contextNetType>
+      <contextNetType>VOP</contextNetType>
+      <contextNetType>VOPNET</contextNetType>
+      <contextNetType>DOP</contextNetType>
+    </toolMenuContext>
+    <toolSubmenu>AYON/Network Clipboard</toolSubmenu>
+    <script scriptType="python"><![CDATA[from ayon_houdini.api import network_clipboard
+network_clipboard.network_copy()]]></script>
+  </tool>
+
+  <tool name="network_paste" label="Network Paste" icon="PLASMA_App">
+    <toolMenuContext name="network">
+      <contextNetType>OBJ</contextNetType>
+      <contextNetType>SOP</contextNetType>
+      <contextNetType>CHOP</contextNetType>
+      <contextNetType>ROP</contextNetType>
+      <contextNetType>LOP</contextNetType>
+      <contextNetType>SHOP</contextNetType>
+      <contextNetType>COP2</contextNetType>
+      <contextNetType>VOP</contextNetType>
+      <contextNetType>VOPNET</contextNetType>
+      <contextNetType>DOP</contextNetType>
+    </toolMenuContext>
+    <toolSubmenu>AYON/Network Clipboard</toolSubmenu>
+    <script scriptType="python"><![CDATA[from ayon_houdini.api import network_clipboard
+widget = network_clipboard.network_paste(kwargs)]]></script>
+  </tool>
+
+</shelfDocument>
