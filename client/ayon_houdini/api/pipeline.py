@@ -449,6 +449,7 @@ def on_new():
 
     if hou.isUIAvailable():
         import hdefereval
+        hdefereval.executeDeferred(lib.start_workfile_template_builder)
         hdefereval.executeDeferred(_enforce_start_frame)
     else:
         # Run without execute deferred when no UI is available because
