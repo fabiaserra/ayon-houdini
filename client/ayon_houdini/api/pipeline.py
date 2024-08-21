@@ -86,13 +86,10 @@ class HoudiniHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         #       opening with last workfile.
         _set_context_settings()
 
-        ### Starts Alkemy-X Override ###
-        # For now hard-code the creation of the first workfile version if it
-        # doesn't exist
-        # This should be exposed and controlled through a new
-        # Houdini workfile template builder settings
-        self.create_first_workfile_version()
-        ### Ends Alkemy-X Override ###
+        # Manually call on_new callback as it doesn't get called when AYON
+        # launches for the first time on a context, only when going to
+        # File -> New
+        on_new()
 
         if not IS_HEADLESS:
             import hdefereval  # noqa, hdefereval is only available in ui mode
@@ -109,33 +106,6 @@ class HoudiniHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
 
     def get_workfile_extensions(self):
         return [".hip", ".hiplc", ".hipnc"]
-
-    ### Starts Alkemy-X Override ###
-    def create_first_workfile_version(self):
-        """
-        Create first version of workfile.
-
-        Should load the content of template into scene so
-        'populate_scene_placeholders' can be started.
-
-        Args:
-            template_path (str): Fullpath for current task and
-                host's template file.
-        """
-        last_workfile_path = os.environ.get("AYON_LAST_WORKFILE")
-        self.log.info("__ last_workfile_path: {}".format(last_workfile_path))
-        if os.path.exists(last_workfile_path):
-            # ignore in case workfile existence
-            self.log.info("Workfile already exists, skipping creation.")
-            return False
-
-        # Create first version
-        self.log.info("Creating first version of workfile.")
-        self.save_workfile(last_workfile_path)
-
-        # Confirm creation of first version
-        return last_workfile_path
-    ### Ends Alkemy-X Override ###
 
     def save_workfile(self, dst_path=None):
         # Force forwards slashes to avoid segfault
