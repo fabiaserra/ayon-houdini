@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 """Package declaring AYON addon 'houdini' version."""
-__version__ = "0.3.12-ax.1"
+__version__ = "0.3.12-ax.2"
