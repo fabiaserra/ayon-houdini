@@ -102,8 +102,9 @@ def get_identifier(node):
     Returns:
         tuple: A tuple containing the node category and type.
     """
-    node_category = node.type().category().typeName().lower()
-    node_type = node.type().nameComponents()[NODE_TYPE_NAME_INDEX]
+    node_type = node.type()
+    node_category = node_type.category().typeName().lower()
+    node_type = node_type.name().lower().replace("::", "_").replace(".", "_")
     return node_category, node_type
 
 
@@ -193,6 +194,6 @@ def init():
     
     This should be called during Houdini startup.
     """
-    for node_class in [hou.SopNode, hou.ObjNode, hou.RopNode]:
+    for node_class in [hou.SopNode, hou.ObjNode, hou.RopNode, hou.TopNode]:
         if SuperNode not in node_class.__bases__:
             node_class.__bases__ = (SuperNode,) + node_class.__bases__
