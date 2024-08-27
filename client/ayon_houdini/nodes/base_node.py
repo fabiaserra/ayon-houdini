@@ -2,6 +2,7 @@ class BaseNode(object):
     default_parms = {}
 
     def on_created(self):
+        """Callback when node gets called"""
         ptg = self.parmTemplateGroup()
 
         # Replace a bunch of parm defaults to make it easier for
@@ -17,6 +18,10 @@ class BaseNode(object):
             if not parm:
                 continue
             self.parm(parm_name).set(parm_value)
+
+    def on_loaded(self):
+        """Callback when node gets loaded"""
+        pass
 
     def replace_parm_defaults(self, ptg):
         """Util function to replace parm template group parm defaults with given dict"""
