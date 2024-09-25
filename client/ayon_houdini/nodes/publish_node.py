@@ -184,7 +184,7 @@ class PublishNode(BaseNode):
                             "name": "show_in_mplay",
                             "label": "Show in MPlay",
                             "help": "Try open path in MPlay",
-                            "script_callback": "from ayon_houdini.api parm_utils;"
+                            "script_callback": "from ayon_houdini.api import parm_utils;"
                                 "parm_utils.open_parm_in_mplay(kwargs['node'], 'path{}'.format(kwargs['script_multiparm_index']))",
                             "script_callback_language": hou.scriptLanguage.Python
                         },
