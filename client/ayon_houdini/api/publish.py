@@ -92,9 +92,6 @@ def submit_to_publish(
     # Add task name suffix to all product name publishes out of Houdini
     product_name = f"{product_name}_{os.getenv('AYON_TASK_NAME')}"
     
-    # Add task name suffix to all product name publishes out of Houdini
-    product_name = f"{product_name}_{os.getenv('AYON_TASK_NAME')}"
-    
     try:
         response, success = publish.publish_version(
             os.getenv("AYON_PROJECT_NAME"),
