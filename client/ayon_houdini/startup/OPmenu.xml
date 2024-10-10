@@ -34,8 +34,8 @@ return kwargs["node"].canCreateDigitalAsset()
                 </expression>
             </context>
             <scriptCode><![CDATA[
-from ayon_houdini.api import hda_utils
-hda_utils.createAssetFromSubnet(kwargs["node"])
+from ayon_houdini.api import ax_hda_utils
+ax_hda_utils.createAssetFromSubnet(kwargs["node"])
 ]]>
             </scriptCode>
         </scriptItem>
