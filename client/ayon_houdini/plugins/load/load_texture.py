@@ -47,9 +47,9 @@ class TextureLoader(plugin.HoudiniLoader):
     TODO: Add support for other renderers and contexts
     """
 
-    families = ["textures"]
+    product_types = {"textures"}
     label = "Load Textures"
-    representations = ["*"]
+    representations = {"*"}
     order = -10
 
     icon = "code-fork"

@@ -90,10 +90,12 @@ class SetFrameRangeWithHandlesLoader(plugin.HoudiniLoader):
 class LoadCameraPlateLoader(plugin.HoudiniLoader):
     """Load plate into selected cameras"""
 
-    families = [
+    product_types = {
         "render",
-    ]
-    representations = ["exr", "png", "jpg"]
+        "plate",
+    }
+
+    representations = {"exr", "png", "jpg"}
 
     label = "Load plate into selected cameras"
     order = 13
