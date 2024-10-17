@@ -2,7 +2,7 @@ import os
 
 import hou
 from ayon_core.lib import path_tools
-from ayon_deadline.lib import publish
+from ayon_deadline.scripts import publish
 from ayon_houdini.api import graph_utils
 
 from ayon_houdini.nodes import (
