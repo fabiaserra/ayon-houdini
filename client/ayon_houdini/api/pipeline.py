@@ -84,11 +84,6 @@ class HoudiniHost(HostBase, IWorkfileHost, ILoadHost, IPublishHost):
         # File -> New
         on_new()
 
-        # Manually call on_new callback as it doesn't get called when AYON
-        # launches for the first time on a context, only when going to
-        # File -> New
-        on_new()
-
         if not IS_HEADLESS:
             import hdefereval  # noqa, hdefereval is only available in ui mode
             # Defer generation of shelves due to issue on Windows where shelf
